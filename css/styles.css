@@ -228,3 +228,7 @@ header {
 .hidden {
   display: none;
 }
+
+#sponsor {
+  margin: 0 auto;
+}

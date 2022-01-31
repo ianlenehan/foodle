@@ -17,7 +17,7 @@ body {
 }
 
 #game {
-  width: 100%;
+  width: 95%;
   max-width: 500px;
   height: 100%;
   display: flex;

@@ -41,7 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
           });
 
           const currentDate = new Date();
-          wordObject = data.find((w) => new Date(w.date) > currentDate);
+          wordObject = data.find(
+            (w) => new Date(w.date.replace(/-/g, "/")) > currentDate
+          );
           currentWord = wordObject.word;
           loadLocalStorage();
         },

@@ -125,26 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return guessedWords[numberOfGuessedWords - 1];
   }
 
-  function getTileClass(letter, index) {
-    const isCorrectLetter = currentWord
-      .toUpperCase()
-      .includes(letter.toUpperCase());
-
-    if (!isCorrectLetter) {
-      return "incorrect-letter";
-    }
-
-    const letterInThatPosition = currentWord.charAt(index);
-    const isCorrectPosition =
-      letter.toLowerCase() === letterInThatPosition.toLowerCase();
-
-    if (isCorrectPosition) {
-      return "correct-letter-in-place";
-    }
-
-    return "correct-letter";
-  }
-
   function updateGuessedLetters(letter) {
     const currentWordArr = getCurrentWordArr();
 
@@ -205,6 +185,61 @@ document.addEventListener("DOMContentLoaded", () => {
     window.localStorage.setItem("totalPlayed", Number(totalPlayed) + 1);
   }
 
+  function getIndicesOfLetter(letter, arr) {
+    const indices = [];
+    let idx = arr.indexOf(letter);
+    while (idx != -1) {
+      indices.push(idx);
+      idx = arr.indexOf(letter, idx + 1);
+    }
+    return indices;
+  }
+
+  function getTileClass(letter, index, currentWordArr) {
+    const isCorrectLetter = currentWord
+      .toUpperCase()
+      .includes(letter.toUpperCase());
+
+    if (!isCorrectLetter) {
+      return "incorrect-letter";
+    }
+
+    const letterInThatPosition = currentWord.charAt(index);
+    const isCorrectPosition =
+      letter.toLowerCase() === letterInThatPosition.toLowerCase();
+
+    if (isCorrectPosition) {
+      return "correct-letter-in-place";
+    }
+
+    const isGuessedMoreThanOnce =
+      currentWordArr.filter((l) => l === letter).length > 1;
+
+    if (!isGuessedMoreThanOnce) {
+      return "correct-letter";
+    }
+
+    const existsMoreThanOnce =
+      currentWord.split("").filter((l) => l === letter).length > 1;
+
+    const indices = getIndicesOfLetter(letter, currentWord.split(""));
+    const otherIndices = indices.filter((i) => i !== index);
+    const hasBeenGuessedCorrectlyButNotHere = otherIndices.some(
+      (i) => currentWordArr[i] === letter
+    );
+
+    if (
+      isCorrectLetter &&
+      isGuessedMoreThanOnce &&
+      !existsMoreThanOnce &&
+      hasBeenGuessedCorrectlyButNotHere
+    ) {
+      return "incorrect-letter";
+    }
+
+    return "correct-letter";
+  }
+
   async function handleSubmitWord() {
     const currentWordArr = getCurrentWordArr();
     const guessedWord = currentWordArr.join("");
@@ -236,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const interval = 200;
       currentWordArr.forEach((letter, index) => {
         setTimeout(() => {
-          const tileClass = getTileClass(letter, index);
+          const tileClass = getTileClass(letter, index, currentWordArr);
           if (tileClass) {
             const letterId = firstLetterId + index;
             const letterEl = document.getElementById(letterId);

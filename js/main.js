@@ -222,22 +222,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const existsMoreThanOnce =
       currentWord.split("").filter((l) => l === letter).length > 1;
 
-    const indices = getIndicesOfLetter(letter, currentWord.split(""));
-    const otherIndices = indices.filter((i) => i !== index);
-    const hasBeenGuessedCorrectlyButNotHere = otherIndices.some(
-      (i) => currentWordArr[i] === letter
-    );
-
-    if (
-      isCorrectLetter &&
-      isGuessedMoreThanOnce &&
-      !existsMoreThanOnce &&
-      hasBeenGuessedCorrectlyButNotHere
-    ) {
-      return "incorrect-letter";
+    // is guessed more than once and exists more than once
+    if (existsMoreThanOnce) {
+      return "correct-letter";
     }
 
-    return "correct-letter";
+    const hasBeenGuessedAlready = currentWordArr.indexOf(letter) < index;
+
+    const indices = getIndicesOfLetter(letter, currentWord.split(""));
+    const otherIndices = indices.filter((i) => i !== index);
+    const isGuessedCorrectlyLater = otherIndices.some(
+      (i) => i > index && currentWordArr[i] === letter
+    );
+
+    if (!hasBeenGuessedAlready && !isGuessedCorrectlyLater) {
+      return "correct-letter";
+    }
+
+    return "incorrect-letter";
   }
 
   async function handleSubmitWord() {
@@ -302,7 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 1200);
       }
 
-      if (guessedWords.length === 6) {
+      if (guessedWords.length === 6 && guessedWord !== currentWord) {
         setTimeout(() => {
           const okSelected = window.confirm(
             `Sorry, you have no more guesses! The word is "${currentWord.toUpperCase()}".`

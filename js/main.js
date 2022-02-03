@@ -251,19 +251,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const res = await fetch(
-        `https://wordsapiv1.p.rapidapi.com/words/${guessedWord.toLowerCase()}`,
-        {
-          method: "GET",
-          headers: {
-            "x-rapidapi-host": "wordsapiv1.p.rapidapi.com",
-            "x-rapidapi-key": "<YOU_KEY_HERE>",
-          },
-        }
-      );
+      if (guessedWord !== currentWord) {
+        const res = await fetch(
+          `https://api.dictionaryapi.dev/api/v2/entries/en/${guessedWord.toLowerCase()}`
+        );
 
-      if (!res.ok) {
-        throw Error();
+        if (!res.ok) {
+          throw Error();
+        }
       }
 
       localStorage.setItem("availableSpace", availableSpace);

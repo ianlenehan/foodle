@@ -121,13 +121,6 @@ header {
   border-color: rgb(83, 141, 78);
 }
 
-@media only screen and (max-width: 400px) {
-  .square {
-    min-width: 15vw;
-    min-height: 15vw;
-  }
-}
-
 #keyboard-container {
   height: 200px;
 }
@@ -231,4 +224,19 @@ header {
 
 #sponsor {
   margin: 0 auto;
+}
+
+@media only screen and (max-width: 400px) {
+  .square {
+    min-width: 12vw;
+    min-height: 12vw;
+  }
+
+  #keyboard-container {
+    height: 165px;
+  }
+
+  .keyboard-row button {
+    height: 45px;
+  }
 }

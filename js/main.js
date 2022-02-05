@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let wordObject;
   let currentWord;
+  let wordData;
 
   // also in local storage
   let guessedWordCount = 0;
@@ -45,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
             (w) => new Date(w.date.replace(/-/g, "/")) > currentDate
           );
           currentWord = wordObject.word;
+          wordData = data;
           loadLocalStorage();
         },
         function (reason) {
@@ -251,7 +253,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      if (guessedWord !== currentWord) {
+      const isExistingWord = wordData.some(({ word }) => word === guessedWord);
+      if (!isExistingWord) {
         const res = await fetch(
           `https://api.dictionaryapi.dev/api/v2/entries/en/${guessedWord.toLowerCase()}`
         );
